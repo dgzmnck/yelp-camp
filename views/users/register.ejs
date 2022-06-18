@@ -1,0 +1,35 @@
+<% layout('layouts/boilerplate') %> 
+
+<div class="row">
+
+    <div class="col-8">
+<img src="https://media.istockphoto.com/photos/hand-pressing-register-now-picture-id497347644?b=1&k=20&m=497347644&s=170667a&w=0&h=j-tmTs3YKQcbaL6b6Ob9ebT01ZjHZpRC52m2HOcEtXA=" alt="">
+    </div>
+
+<div class="col-4">
+<h1>Register</h1>
+
+<form action="/register" class="validated-form" novalidate method="POST">
+
+<div class="mb-3">
+    <label for="username" class="form-label">Username</label>
+    <input type="text" class="form-control" id="username" name="username">
+</div>
+
+<div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" name="email">
+</div>
+
+<div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password">
+</div>
+
+<div class="mb-3">
+<button class="btn btn-primary">Submit</button>
+</div>
+
+</form>
+</div>
+</div>
