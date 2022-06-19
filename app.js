@@ -5,17 +5,23 @@ const ejsMate= require('ejs-mate')
 const session = require('express-session') // npm i express-session
 const flash = require('connect-flash')// npm i connect-flash   //493
 
+//particle js
+// const tsParticles = require("tsparticles-engine");
+// const particlesJS = require("particle.js")
+
 const Campground = require('./models/campground'); //import Campground model
 const Review =require('./models/review')
 
-const campgrounds = require('./routes/campgrounds')
-
-const reviews = require('./routes/reviews')
-
+const campgroundRoutes = require('./routes/campgrounds')
+const reviewRoutes = require('./routes/reviews')
+const userRoutes= require('./routes/users')
 
 
 const methodOverride= require('method-override')
+const passport=require('passport')
+const LocalStrategy = require('passport-local')
 
+const User= require('./models/user')
 
 const Joi= require('joi')
 const {campgroundSchema,reviewSchema} = require('./schemas')
@@ -56,6 +62,7 @@ app.use(methodOverride('_method'))
 app.use(express.static(path.join(__dirname,'public'))) // make public folder accessible //491
 
 
+
 //-----492======
 const sessionConfig= {
   secret: 'thisisthesecretforthissession',
@@ -72,18 +79,41 @@ app.use(flash());//493
 // req.flash('key','value') - storing
 //res.flash('key') - calling
 
+
+app.use(passport.initialize())
+app.use(passport.session()) // invoke afterr express session
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
 //=============================
 //RES.LOCALS makes a variable accessible to all res
 app.use((req,res,next)=> {
+  //on udemy, returnUrl is saved on same session, but now, when logged in, the app gives new session id so return url is not saved. so i saved it
+  // to res.locals
+res.locals.returnUrl=req.session.returnUrl
+console.log(res.locals.returnUrl)
+
+  res.locals.currentUser= req.user;
   res.locals.success= req.flash('success');
   res.locals.error = req.flash('error')
   next()
 })
 
 
+/* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
 
-app.use('/campgrounds',campgrounds)
-app.use('/campgrounds/:id/reviews',reviews)
+// // pause will stop the animations
+// particles.pause();
+
+
+app.use('/campgrounds',campgroundRoutes)
+app.use('/campgrounds/:id/reviews',reviewRoutes)
+app.use('/',userRoutes)
+
 
 //INDEX
 app.get('/',wrapAsync(async(req,res,next)=> {
@@ -94,14 +124,23 @@ app.get('/',wrapAsync(async(req,res,next)=> {
 
 
 
-// const handleValidationErr = err => {
-//     return new AppError(`Validation failed ...${err.message}`,400)
-// }
+const handleValidationErr = err => {
+    return new AppError(`Validation failed ...${err.message}`,400)
+}
+
+const handleCastErr = err => {
+  return new AppError(`Validation failed ...${err.message}`,400)
+
+}
+
+
 
 app.use((err,req,res,next) => {
-
-
     if (err.name ==='ValidationError') err = handleValidationErr(err) 
+    if (err.name ==='CastError') {
+       err.status=404;
+       err.message="page not found"
+    }
     next(err)
 })
 
@@ -110,7 +149,10 @@ app.use((err,req,res,next) => {
 
 app.all('*',(req,res, next) => {
    next(new AppError('Page not found',404)) 
+ 
+  
 })
+
 app.use((err,req,res,next)=> {
 
     const {status = 500} = err;

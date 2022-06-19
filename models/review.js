@@ -6,7 +6,11 @@ const Schema = mongoose.Schema;
 //create Schema for Campground , just like database or collection
 const reviewSchema = new Schema({
     body: String,
-    rating: Number
+    rating: Number,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 
