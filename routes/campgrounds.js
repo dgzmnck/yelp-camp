@@ -12,6 +12,10 @@ const wrapAsync = require("../utils/wrapAsync");
 const { isLoggedIn, validateCampground, isAuthor } = require("../middleware");
 const { default: mongoose } = require("mongoose");
 
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
+
 // router.get('/',wrapAsync(campgrounds.index))
 
 router
@@ -19,6 +23,7 @@ router
   .get(wrapAsync(campgrounds.index))
   .post(
     isLoggedIn,
+    upload.array("image"),
     validateCampground,
     wrapAsync(campgrounds.createNewCampground)
   );
@@ -33,6 +38,7 @@ router
   .put(
     isLoggedIn,
     isAuthor,
+    upload.array("image"),
     validateCampground,
     wrapAsync(campgrounds.updateCampground)
   )

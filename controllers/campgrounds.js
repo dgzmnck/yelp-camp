@@ -19,12 +19,18 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createNewCampground = async (req, res, next) => {
+  console.log(req.body, req.files);
   const campground = new Campground(req.body.campground);
+  campground.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
   campground.author = req.user._id; // thanks to passport
   await campground.save();
   req.flash("success", "Successfully made a new campground");
   res.redirect(`/campgrounds/${campground._id}`);
 };
+
 module.exports.showCampground = async (req, res, next, err) => {
   const { id } = req.params;
   if (!objectid.isValid(id)) {
@@ -60,6 +66,14 @@ module.exports.updateCampground = async (req, res, next) => {
   const camp = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
+  const imgs = req.files.map((img) => ({
+    url: img.path,
+    filename: img.filename,
+  }));
+  console.log("here");
+  camp.images.push(...imgs);
+  await camp.save();
+
   req.flash("success", "Successfully updated campgrounds");
   res.redirect("/campgrounds");
 };
