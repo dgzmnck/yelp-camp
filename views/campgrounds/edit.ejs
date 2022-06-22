@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
 <div class="row">
-  <h1 class="text-center">New Campground</h1>
+  <h1 class="text-center">Edit Campground</h1>
   <div class="col-6 offset-3">
     <form
       action="/campgrounds/<%= campground._id %>?_method=PUT"
@@ -35,9 +35,18 @@
         <div class="valid-feedback">looks good!</div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="image">Add images</label>
-        <input type="file" name="image" id="image" multiple />
+      <div class="mb-3 custom-file">
+        <label for="customFileInput" class="form-label custom-file-label"
+          >Add Images</label
+        >
+        <input
+          class="form-control custom-file-input"
+          type="file"
+          id="customFileInput"
+          name="image"
+          multiple
+        />
+        <div class="files-here d-flex align-self-end"></div>
       </div>
 
       <div class="mb-3">
@@ -72,9 +81,43 @@
         </div>
       </div>
 
+      <div class="mb-3 d-flex flex-wrap">
+        <% campground.images.forEach(function(img,i) { %>
+        <img src="<%= img.thumbnail %>" class="img-thumbnail" />
+        <div class="form-check-inline">
+          <input
+            type="checkbox"
+            name="deleteImages[]"
+            value="<%= img.filename %>"
+            id="image-<%= i %>"
+          />
+          <label for="image-<%= i %>"> Delete?</label>
+        </div>
+        <% }) %>
+      </div>
+
       <div class="mb-3">
         <button class="btn btn-primary">Update campground</button>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+  document
+    .querySelector(".custom-file-input")
+    .addEventListener("change", function (e) {
+      var files = document.getElementById("customFileInput").files;
+      var nextSibling = e.target.nextElementSibling;
+
+      var filenames = "";
+      for (let f of files) {
+        filenames += f.name + ", ";
+      }
+      if (files && files.length > 1) {
+        nextSibling.innerText = filenames;
+      } else {
+        nextSibling.innerText = "";
+      }
+    });
+</script>

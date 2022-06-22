@@ -2,6 +2,23 @@
 
 <link rel="stylesheet" href="/css/starability.css" />
 
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  #map {
+    position: relative;
+    height: 400px;
+    width: 100%;
+  }
+</style>
+
+<script>
+  const mapToken = "<%- process.env.MAPBOX_TOKEN %>";
+  const campground = <%- JSON.stringify(campground) %>
+</script>
+
 <p><a href="/campgrounds">Back to campgrounds</a></p>
 
 <div class="row">
@@ -78,6 +95,8 @@
   </div>
 
   <div class="col-6">
+    <div id="map"></div>
+
     <% if(currentUser) { %>
     <h2>Leave a Review</h2>
     <div class="mb-3">
@@ -174,3 +193,5 @@
     <% } %>
   </div>
 </div>
+
+<script src="/js/showPageMap.js"></script>

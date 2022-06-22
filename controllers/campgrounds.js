@@ -2,6 +2,14 @@ const Campground = require("../models/campground");
 
 const objectid = require("mongoose").Types.ObjectId;
 
+//CLOUDINARTY -= UPLOADING IMAGES
+const { cloudinary } = require("../cloudinary");
+
+// MAPBOX  - GEOCODING LCOATIONS
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 const wrapAsync = require("../utils/wrapAsync");
 // module.exports.index = async(req,res,next)=> {
 //     // const campgrounds= await Campground.find({});
@@ -19,14 +27,22 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createNewCampground = async (req, res, next) => {
-  console.log(req.body, req.files);
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: req.body.campground.location,
+      limit: 1,
+    })
+    .send();
+
   const campground = new Campground(req.body.campground);
+  campground.geometry = geoData.body.features[0].geometry;
   campground.images = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
   }));
   campground.author = req.user._id; // thanks to passport
   await campground.save();
+  console.log(campground);
   req.flash("success", "Successfully made a new campground");
   res.redirect(`/campgrounds/${campground._id}`);
 };
@@ -63,6 +79,7 @@ module.exports.renderEditForm = async (req, res, next) => {
 
 module.exports.updateCampground = async (req, res, next) => {
   const { id } = req.params;
+
   const camp = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
@@ -70,9 +87,20 @@ module.exports.updateCampground = async (req, res, next) => {
     url: img.path,
     filename: img.filename,
   }));
+
   console.log("here");
   camp.images.push(...imgs);
   await camp.save();
+
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+
+    await camp.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
 
   req.flash("success", "Successfully updated campgrounds");
   res.redirect("/campgrounds");

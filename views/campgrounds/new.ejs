@@ -40,9 +40,20 @@
             </div>
         </div> -->
 
-      <div class="mb-3">
-        <input type="file" name="image" id="asd" multiple />
+      <div class="mb-3 custom-file">
+        <label for="customFileInput" class="form-label custom-file-label"
+          >Add Images</label
+        >
+        <input
+          class="form-control custom-file-input"
+          type="file"
+          id="customFileInput"
+          name="image"
+          multiple
+        />
+        <div class="files-here d-flex align-self-end"></div>
       </div>
+
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
         <textarea
@@ -77,3 +88,22 @@
     </form>
   </div>
 </div>
+
+<script>
+  document
+    .querySelector(".custom-file-input")
+    .addEventListener("change", function (e) {
+      var files = document.getElementById("customFileInput").files;
+      var nextSibling = e.target.nextElementSibling;
+
+      var filenames = "";
+      for (let f of files) {
+        filenames += f.name + ", ";
+      }
+      if (files && files.length > 1) {
+        nextSibling.innerText = filenames;
+      } else {
+        nextSibling.innerText = "";
+      }
+    });
+</script>
