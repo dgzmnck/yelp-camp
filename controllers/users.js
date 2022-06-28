@@ -28,6 +28,7 @@ module.exports.renderLogIn = (req, res) => {
 module.exports.login = (req, res) => {
   req.flash("success", "you are logged in now");
   console.log("ON LOGIN:", req.session);
+  console.log(res.locals.returnUrl);
   const redirectUrl = res.locals.returnUrl || "/campgrounds";
   delete res.locals.returnUrl;
   res.redirect(redirectUrl);

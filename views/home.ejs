@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YELP CAMP</title>
+    <link rel="stylesheet" href="/css/home.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+        <div class="navbrand">
+          <a href="#">YELPCAMP</a>
+        </div>
+        <div class="navlink">
+          <a href="/campgrounds">Campgrounds</a>
+          <% if (!currentUser) { %>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+          <% } else { %>
+          <a href="/logout">Logout</a>
+          <% } %>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="welcome">Welcome to Yelpcamp</div>
+      <p>
+        Jump right in and explore our many campgrounds. <br />
+        Feel free to share some of your own and comment on others!
+      </p>
+      <a href="/campgrounds" class="btn">View campgrounds</a>
+    </main>
+
+    <footer>&copy; Yelpcamp 2022</footer>
+  </body>
+</html>

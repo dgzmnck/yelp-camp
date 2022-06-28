@@ -11,6 +11,7 @@ const ejsMate = require("ejs-mate");
 const session = require("express-session"); // npm i express-session
 const flash = require("connect-flash"); // npm i connect-flash   //493
 
+const mongoSanitize = require("express-mongo-sanitize");
 //particle js
 // const tsParticles = require("tsparticles-engine");
 // const particlesJS = require("particle.js")
@@ -34,6 +35,7 @@ const { campgroundSchema, reviewSchema } = require("./schemas");
 const AppError = require("./utils/AppError"); // self made error handler
 
 const wrapAsync = require("./utils/wrapAsync");
+const { strict } = require("assert");
 // const { nextTick } = require('process');
 
 //======CONNECTION TO MONGO DATABASE==================
@@ -59,11 +61,18 @@ app.set("views", path.join(__dirname, "views")); //ASSIGN VIEWS TO DIRNAME/VIEWS
 app.use(express.urlencoded({ extended: true })); //PARSE REQ.BODY
 app.use(methodOverride("_method"));
 
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
+
 // app.use(express.static('public'))
 app.use(express.static(path.join(__dirname, "public"))); // make public folder accessible //491
 
 //-----492======
 const sessionConfig = {
+  name: "shesh",
   secret: "thisisthesecretforthissession",
   resave: false,
   saveUninitialized: true,
@@ -73,6 +82,7 @@ const sessionConfig = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
 app.use(session(sessionConfig)); //492
 app.use(flash()); //493
 // req.flash('key','value') - storing
@@ -89,9 +99,9 @@ passport.deserializeUser(User.deserializeUser());
 //RES.LOCALS makes a variable accessible to all res
 app.use((req, res, next) => {
   //on udemy, returnUrl is saved on same session, but now, when logged in, the app gives new session id so return url is not saved. so i saved it
-  // to res.locals
-  res.locals.returnUrl = req.session.returnUrl;
-  console.log(res.locals.returnUrl);
+  // under res.locals
+
+  res.locals.returnUrl = req.session.originalUrl;
 
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
@@ -113,7 +123,7 @@ app.get(
   "/",
   wrapAsync(async (req, res, next) => {
     const campgrounds = await Campground.find({});
-    res.render("campgrounds/index", { campgrounds });
+    res.render("home");
   })
 );
 

@@ -24,16 +24,8 @@ const seedDB = async () => {
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       images: [
         {
-          url: "https://res.cloudinary.com/tempdgzmnck/image/upload/v1655789204/YelpCamp/y83okromkviq6okrewhl.png",
-          filename: "YelpCamp/y83okromkviq6okrewhl",
-        },
-        {
-          url: "https://res.cloudinary.com/tempdgzmnck/image/upload/v1655789204/YelpCamp/o0rn2idxmsc8oopccmbu.png",
-          filename: "YelpCamp/o0rn2idxmsc8oopccmbu",
-        },
-        {
-          url: "https://res.cloudinary.com/tempdgzmnck/image/upload/v1655789204/YelpCamp/oxheas9jj6f5f8dnqejl.png",
-          filename: "YelpCamp/oxheas9jj6f5f8dnqejl",
+          url: "https://res.cloudinary.com/tempdgzmnck/image/upload/v1656377680/YelpCamp/ky2mr3y6fgxdkznkb2oy.jpg",
+          filename: "YelpCamp/ky2mr3y6fgxdkznkb2oy",
         },
       ],
       description:

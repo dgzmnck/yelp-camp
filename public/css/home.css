@@ -1,0 +1,74 @@
+* {
+    margin:0;
+    padding:0;
+    font-family: Roboto;
+    box-sizing:border-box;
+    font-size: 1em;
+}
+
+header {
+    height:5vh;
+    background-color:#333;
+    padding:12px;
+ 
+}
+
+a {
+    text-decoration: none;
+    font-weight: 700;
+    color:white;
+}
+nav {
+
+    display: flex;
+    justify-content: space-between;
+    max-width: 80%;
+    margin:auto;
+    padding: 5px;
+}
+
+.navlink {
+    display: flex;
+
+}
+.navlink a {
+
+    margin-left: 5px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+main {
+    text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+height: 90vh;
+background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://www.planetware.com/wpimages/2021/06/canada-british-columbia-parksville-best-campgrounds-intro-paragraph-camping-rathtrevor-beach.jpg");
+
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+
+
+color:white;
+}
+.welcome {
+    font-size: 3em;
+    
+}
+.btn  {
+border: 2px solid black;
+background: red;
+padding: 2px 12px;
+
+}
+
+footer {
+    background-color: #333;
+    padding: 10px 10px;
+    text-align: center;
+    height: 5vh;
+    margin-top:auto;
+}
