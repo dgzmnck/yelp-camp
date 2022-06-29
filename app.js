@@ -2,8 +2,6 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const secret = process.env.SECRET;
-
 const express = require("express"); //import express
 const path = require("path"); //import path - used for the views folder
 const mongoose = require("mongoose"); //import mongoose
