@@ -111,7 +111,6 @@ store.on("error", function (e) {
 app.use(
   session({
     store: MongoStore.create({ mongoUrl: db_url, touchAfter: 24 * 60 * 60 }),
-    name: "shesh",
     resave: false,
     saveUninitialized: true,
     secret,
