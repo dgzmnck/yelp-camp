@@ -91,19 +91,19 @@ store.on("error", function (e) {
   console.log("session store error", e);
 });
 
-const sessionConfig = {
-  store: store,
-  name: "shesh",
-  secret,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    secure: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
-};
+// const sessionConfig = {
+//   store: store,
+//   name: "shesh",
+//   secret,
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: {
+//     httpOnly: true,
+//     secure: true,
+//     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+//     maxAge: 1000 * 60 * 60 * 24 * 7,
+//   },
+// };
 
 // app.use(session(sessionConfig)); //492
 
@@ -111,11 +111,13 @@ const sessionConfig = {
 app.use(
   session({
     store: MongoStore.create({ mongoUrl: "mongodb://localhost/test-app" }),
+    name: "shesh",
     resave: false,
     saveUninitialized: true,
     secret,
     cookie: {
       httpOnly: true,
+      secure: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
