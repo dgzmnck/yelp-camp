@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-console.log(process.env.SECRET);
+const secret = process.env.SECRET;
 
 const express = require("express"); //import express
 const path = require("path"); //import path - used for the views folder
@@ -144,7 +144,6 @@ app.use((req, res, next) => {
   res.locals.returnUrl = req.session.originalUrl;
 
   res.locals.currentUser = req.user;
-  console.log(req.user);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
