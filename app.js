@@ -113,7 +113,7 @@ app.use(
     store: MongoStore.create({ mongoUrl: "mongodb://localhost/test-app" }),
     resave: false,
     saveUninitialized: true,
-    secret: "thisisthesecretforthissession",
+    secret,
     cookie: {
       httpOnly: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
