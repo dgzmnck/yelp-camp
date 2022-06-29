@@ -196,6 +196,8 @@ app.use((err, req, res, next) => {
 });
 
 //STARTING EXPRESS SERVER ON PORT 3000
-app.listen(3000, () => {
-  console.log(`Serving on Port ${db_url}`);
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Serving on Port ${port}`);
 });
