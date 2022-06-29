@@ -5,8 +5,7 @@ const AppError = require("./utils/AppError"); // self made error handler
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    req.session.originalUrl = req.originalUrl.replace("/reviews", "");
-
+    req.session.returnUrl = req.originalUrl.replace("/reviews", "");
     req.flash("error", "You must be logged in to do this action.");
     return res.redirect("/login");
   }

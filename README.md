@@ -73,6 +73,21 @@ replaceWith: "\_",
 })
 );
 
+===============================
 npm i sanitize-html
 used alongside joi to escape htmlcharacters
 reflected on schemas.js
+
+==================================
+
+<!-- helmetjs.github.io
+section 58 ep 571
+npm i helmet ===for http headers
+
+const helmet = require('helmet')
+
+app.use(helmet()); -->
+
+# ep 574
+
+npm i connect-mongo

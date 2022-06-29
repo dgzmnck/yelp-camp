@@ -10,9 +10,11 @@ const mongoose = require("mongoose"); //import mongoose
 const ejsMate = require("ejs-mate");
 const session = require("express-session"); // npm i express-session
 const flash = require("connect-flash"); // npm i connect-flash   //493
-
+const MongoStore = require("connect-mongo");
 const mongoSanitize = require("express-mongo-sanitize");
+
 //particle js
+
 // const tsParticles = require("tsparticles-engine");
 // const particlesJS = require("particle.js")
 
@@ -36,10 +38,14 @@ const AppError = require("./utils/AppError"); // self made error handler
 
 const wrapAsync = require("./utils/wrapAsync");
 const { strict } = require("assert");
+
+const helmet = require("helmet");
 // const { nextTick } = require('process');
 
+const db_url = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+const secret = process.env.SECRET || "secretnimarites";
 //======CONNECTION TO MONGO DATABASE==================
-mongoose.connect("mongodb://localhost:27017/yelp-camp", {
+mongoose.connect(db_url, {
   useNewURLParser: true,
   useUnifiedTopology: true,
 });
@@ -55,9 +61,11 @@ db.once("open", () => {
 //==================================================
 
 const app = express(); //EXPRESS APP
+
 app.engine("ejs", ejsMate); //ASSIGN EJS MATE AS ENGINE NOT THE DEFAULT
 app.set("view engine", "ejs"); //ASSIGN EJS AS VIEW ENGINE
 app.set("views", path.join(__dirname, "views")); //ASSIGN VIEWS TO DIRNAME/VIEWS FOLDER
+
 app.use(express.urlencoded({ extended: true })); //PARSE REQ.BODY
 app.use(methodOverride("_method"));
 
@@ -67,23 +75,55 @@ app.use(
   })
 );
 
+app.use(
+  helmet({ crossOriginEmbedderPolicy: false, contentSecurityPolicy: false })
+);
 // app.use(express.static('public'))
 app.use(express.static(path.join(__dirname, "public"))); // make public folder accessible //491
 
 //-----492======
+
+const store = MongoStore.create({
+  mongoUrl: db_url,
+  touchAfter: 24 * 60 * 60,
+  // See below for details
+});
+
+store.on("error", function (e) {
+  console.log("session store error", e);
+});
+
 const sessionConfig = {
+  store: store,
   name: "shesh",
-  secret: "thisisthesecretforthissession",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
+    secure: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
 
-app.use(session(sessionConfig)); //492
+// app.use(session(sessionConfig)); //492
+
+//app.use(session({}));
+app.use(
+  session({
+    store: MongoStore.create({ mongoUrl: "mongodb://localhost/test-app" }),
+    resave: false,
+    saveUninitialized: true,
+    secret: "thisisthesecretforthissession",
+    cookie: {
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
+
 app.use(flash()); //493
 // req.flash('key','value') - storing
 //res.flash('key') - calling
@@ -104,6 +144,7 @@ app.use((req, res, next) => {
   res.locals.returnUrl = req.session.originalUrl;
 
   res.locals.currentUser = req.user;
+  console.log(req.user);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
@@ -156,5 +197,5 @@ app.use((err, req, res, next) => {
 
 //STARTING EXPRESS SERVER ON PORT 3000
 app.listen(3000, () => {
-  console.log("Serving on Port 3000");
+  console.log(`Serving on Port ${db_url}`);
 });
